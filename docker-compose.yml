@@ -1,0 +1,61 @@
+﻿services:
+  apigateway:
+    image: apigateway
+    build:
+      context: .
+      dockerfile: APIGateway/
+    ports:
+        - "8080:8080"
+        - "8081:8081"
+      
+  backoffice:
+    image: backoffice
+    build:
+      context: .
+      dockerfile: Backoffice/Dockerfile
+    depends_on:
+      - rabbitmq
+    ports:
+        - "8082:8080"
+
+  login:
+    image: login
+    build:
+      context: .
+      dockerfile: Login/Dockerfile
+    depends_on:
+      - rabbitmq
+      - apigateway
+
+  products:
+    image: products
+    build:
+      context: .
+      dockerfile: Products/Dockerfile
+    depends_on:
+      - rabbitmq
+      - apigateway
+
+  useraddresses:
+    image: useraddresses
+    build:
+      context: .
+      dockerfile: UserAddresses/Dockerfile
+    depends_on:
+        - rabbitmq
+        - apigateway
+
+  orderprocessor:
+    image: orderprocessor
+    build:
+      context: .
+      dockerfile: OrderProcessor/Dockerfile
+    depends_on:
+      - rabbitmq
+      - apigateway
+
+  rabbitmq:
+    image: masstransit/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
